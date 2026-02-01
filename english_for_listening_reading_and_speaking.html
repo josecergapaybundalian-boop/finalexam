@@ -1,0 +1,554 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Final Examination</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:#e0f7ff;
+    user-select:none;
+}
+.flash-alert {
+    animation: flash 0.4s alternate infinite;
+}
+@keyframes flash {
+    from { background: black; }
+    to { background: transparent; }
+}
+@media print{
+    body{background:#fff;color:#000}
+    button,.timer{display:none}
+}
+
+.header{text-align:center;padding:20px}
+.header img{width:130px}
+
+.timer{text-align:center;font-size:22px;font-weight:bold;margin-bottom:10px}
+
+.container{
+    width:90%;
+    margin:auto;
+    background:rgba(0,0,0,0.45);
+    padding:20px;
+    border-radius:12px;
+}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px}
+td{border:1px solid #00e5ff;padding:8px}
+input{width:96%;padding:6px}
+
+.question{
+    border:1px solid #00e5ff;
+    padding:12px;
+    margin-bottom:14px;
+    border-radius:8px;
+}
+
+.choice{
+    padding:6px;
+    margin:6px 0;
+    border:1px solid #aaa;
+    border-radius:5px;
+    cursor:pointer;
+}
+.choice.selected{background:#ccefff;color:#000}
+.choice.correct{background:#d4edda;color:#000}
+.choice.wrong{background:#f8d7da;color:#000}
+
+.answer-review{
+    margin-top:8px;
+    padding:6px;
+    background:rgba(255,255,255,0.1);
+    border-radius:6px;
+    font-size:14px;
+}
+
+button{
+    padding:12px 24px;
+    font-size:16px;
+    border:none;
+    border-radius:8px;
+    margin:10px;
+    cursor:pointer;
+}
+
+/* === SECURITY WARNING OVERLAY === */
+#securityOverlay{
+    position:fixed;
+    top:0;left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.9);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    animation:blink 0.6s infinite;
+}
+
+#securityOverlay h1{
+    color:#fff;
+    font-size:38px;
+    text-align:center;
+}
+
+@keyframes blink{
+    0%{opacity:1;}
+    50%{opacity:0.2;}
+    100%{opacity:1;}
+}
+
+/* Freeze exam */
+.freeze *{
+    pointer-events:none !important;
+}
+
+#result{text-align:center;font-size:18px;margin-top:20px}
+</style>
+</head>
+
+<body
+oncopy="return false"
+oncut="return false"
+onpaste="return false"
+oncontextmenu="return false"
+ondragstart="return false"
+onselectstart="return false">
+
+<div class="header">
+    <img src="https://image2url.com/r2/default/images/1769014503355-aed3a663-edee-4712-974b-a5aa8787a845.png">
+    <h1>FINAL EXAMINATION</h1>
+    <h2>Chumphon Vocational College</h2>
+    <h3>General Relations Department</h3>
+</div>
+
+<div class="timer" id="timer">Time Remaining: 60:00</div>
+
+<div class="container">
+
+<table>
+<tr><td>Subject</td><td><input value="English for Listening and Speaking"></td></tr>
+<tr><td>Name of Student</td><td><input></td></tr>
+<tr><td>Student ID Number</td><td><input></td></tr>
+<tr><td>Department</td><td><input></td></tr>
+<tr><td>Teacher</td><td><input></td></tr>
+</table>
+
+<div id="questions"></div>
+
+<div style="text-align:center">
+    <button onclick="submitExam()">Submit Examination</button>
+    <button onclick="window.print()">Save PDF</button>
+</div>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+// Disable key shortcuts like Ctrl+C/V/P
+document.addEventListener('keydown',function(e){
+    if(e.ctrlKey && ['c','v','p','C','V','P'].includes(e.key)){
+        e.preventDefault();
+        alert("Copying, pasting, and printing are disabled.");
+    }
+});
+
+// Detect PrintScreen
+document.addEventListener('keyup',function(e){
+    if(e.key === "PrintScreen" || e.keyCode === 44){
+        alert("Screenshots are not allowed!");
+        document.body.classList.add("flash-alert");
+        setTimeout(()=>document.body.classList.remove("flash-alert"),2000);
+    }
+});
+
+// Warn on blur
+window.addEventListener('blur',function(){
+    alert("Do not leave the exam window!");
+});
+</script>
+
+<script>
+let timeLeft=3600;
+setInterval(()=>{
+    let m=Math.floor(timeLeft/60);
+    let s=timeLeft%60;
+    document.getElementById("timer").textContent=
+    `Time Remaining: ${m}:${s.toString().padStart(2,"0")}`;
+    timeLeft--;
+},1000);
+
+
+const questions = [
+
+/* =====================================================
+   READING PASSAGE 1 (Questions 1–10)
+===================================================== */
+{
+q:`<b>Reading Passage 1</b><br><br>
+Education has changed greatly in recent years due to the development of technology. In the past, students depended mainly on books and classroom lectures. Today, digital tools such as online platforms, educational applications, and virtual classrooms allow learners to study beyond traditional school environments. While technology provides flexibility and access to information, students must also develop discipline and responsibility to use it effectively.`,
+o:["Continue"],
+c:0
+},
+
+{q:"1. What is the main idea of the passage?",o:["Traditional education is better","Technology has changed education","Books are no longer useful","Teachers are unnecessary"],c:1},
+{q:"2. In the past, students mainly depended on:",o:["Mobile phones","Books and classroom lectures","Online platforms","Educational apps"],c:1},
+{q:"3. What allows students to study beyond classrooms?",o:["Libraries","Teachers","Digital tools","Exams"],c:2},
+{q:"4. Which is mentioned as a digital tool?",o:["Notebook","Chalkboard","Virtual classroom","Whiteboard"],c:2},
+{q:"5. What advantage does technology provide?",o:["Strict rules","Limited access","Flexibility","Less responsibility"],c:2},
+{q:"6. What must students develop?",o:["Speed","Discipline","Creativity only","Memory"],c:1},
+{q:"7. Technology gives access to:",o:["Games only","Information","Teachers only","Friends"],c:1},
+{q:"8. The word 'effectively' means:",o:["Carelessly","Successfully","Slowly","Rarely"],c:1},
+{q:"9. The passage suggests technology is:",o:["Completely negative","Useless","Helpful if used well","Dangerous"],c:2},
+{q:"10. The tone of the passage is:",o:["Negative","Balanced","Angry","Humorous"],c:1},
+
+/* =====================================================
+   READING PASSAGE 2 (Questions 11–20)
+===================================================== */
+{
+q:`<b>Reading Passage 2</b><br><br>
+Many people today are concerned about their mental health. Stress from work, studies, and personal responsibilities can affect a person’s well-being. Experts recommend managing stress through regular exercise, healthy sleep habits, and maintaining social connections. Taking breaks and seeking help when needed are also important steps toward mental wellness.`,
+o:["Continue"],
+c:0
+},
+
+{q:"11. What is the passage mainly about?",o:["Physical fitness","Mental health","Diet planning","Career success"],c:1},
+{q:"12. What can affect mental health?",o:["Entertainment","Stress","Hobbies","Vacations"],c:1},
+{q:"13. Stress comes from:",o:["Sports only","Work and studies","Music","Travel"],c:1},
+{q:"14. What do experts recommend?",o:["Ignoring stress","Managing stress","Working longer hours","Sleeping less"],c:1},
+{q:"15. Which is a healthy habit mentioned?",o:["Late nights","Regular exercise","Fast food","Overworking"],c:1},
+{q:"16. Social connections help with:",o:["Money","Mental wellness","Technology","Speed"],c:1},
+{q:"17. Taking breaks is described as:",o:["Useless","Important","Lazy","Harmful"],c:1},
+{q:"18. Seeking help should be done:",o:["Never","When needed","Only at work","Only at school"],c:1},
+{q:"19. The passage encourages people to:",o:["Hide stress","Care for mental health","Avoid responsibilities","Quit work"],c:1},
+{q:"20. The tone of the passage is:",o:["Supportive","Angry","Negative","Fearful"],c:0},
+
+/* =====================================================
+   READING PASSAGE 3 (Questions 21–30)
+===================================================== */
+{
+q:`<b>Reading Passage 3</b><br><br>
+Globalization has connected countries through trade, communication, and travel. Businesses can now reach international markets more easily, and people can learn about different cultures through media and technology. However, globalization also presents challenges such as job competition and cultural misunderstandings. Understanding and cooperation are essential in a global society.`,
+o:["Continue"],
+c:0
+},
+
+{q:"21. What is globalization?",o:["Isolation of countries","Connection between countries","Local trade only","National competition"],c:1},
+{q:"22. Globalization connects countries through:",o:["Sports","Trade and communication","Politics only","Education only"],c:1},
+{q:"23. Businesses can now:",o:["Work locally only","Reach global markets","Avoid competition","Reduce customers"],c:1},
+{q:"24. People learn about cultures through:",o:["Travel only","Media and technology","Books only","Schools only"],c:1},
+{q:"25. One challenge of globalization is:",o:["Peace","Job competition","Free travel","Education"],c:1},
+{q:"26. Cultural misunderstandings are described as:",o:["Benefits","Challenges","Solutions","Opportunities"],c:1},
+{q:"27. What is essential in a global society?",o:["Competition","Isolation","Understanding","Control"],c:2},
+{q:"28. The passage shows globalization has:",o:["Only advantages","Only problems","Both benefits and challenges","No impact"],c:2},
+{q:"29. The writer’s attitude is:",o:["Extreme","Balanced","Negative","Unclear"],c:1},
+{q:"30. The main idea focuses on:",o:["Technology only","Global connection","Local culture","Education systems"],c:1},
+
+/* =====================================================
+   SPEAKING TEST (Questions 31–60)
+===================================================== */
+
+/* --- DAILY COMMUNICATION --- */
+{q:"31. If someone asks, 'How are you today?' What is the best response?",o:["Go away","I’m fine, thank you","What do you want?","No answer"],c:1},
+{q:"32. What should you say when you don’t understand a question?",o:["Be silent","Please repeat the question","Walk away","Guess randomly"],c:1},
+{q:"33. How do you politely disagree?",o:["You are wrong","I don’t agree","I respect your opinion, but…","That’s stupid"],c:2},
+{q:"34. What is an appropriate greeting in a formal situation?",o:["Hey bro","Good morning","What’s up","Yo"],c:1},
+{q:"35. What should you do when speaking in public?",o:["Speak clearly","Speak very fast","Avoid eye contact","Whisper"],c:0},
+
+/* --- OPINION & IDEAS --- */
+{q:"36. When giving an opinion, you should:",o:["Interrupt others","Speak confidently","Avoid reasons","Be rude"],c:1},
+{q:"37. What phrase introduces an opinion?",o:["In my opinion","Listen to me","Be quiet","Never mind"],c:0},
+{q:"38. What helps make your opinion clear?",o:["Shouting","Examples","Silence","Gestures only"],c:1},
+{q:"39. If someone disagrees politely, you should:",o:["Argue","Respect their view","Ignore them","Leave"],c:1},
+{q:"40. A good speaker should be:",o:["Aggressive","Clear","Silent","Fast"],c:1},
+
+/* --- WORKPLACE & SITUATIONS --- */
+{q:"41. How do you ask for help politely?",o:["Help me now","Could you help me, please?","Do it","I demand help"],c:1},
+{q:"42. What is the best response to criticism?",o:["Get angry","Listen and improve","Ignore it","Blame others"],c:1},
+{q:"43. If you are late, what should you say?",o:["Say nothing","Apologize and explain","Make excuses","Leave"],c:1},
+{q:"44. Professional speaking should be:",o:["Casual","Clear and polite","Loud","Informal"],c:1},
+{q:"45. When presenting ideas, you should:",o:["Rush","Organize your thoughts","Read only","Avoid practice"],c:1},
+
+/* --- PROBLEM SOLVING & ROLE PLAY --- */
+{q:"46. If a customer is unhappy, you should:",o:["Ignore them","Listen calmly","Argue","Walk away"],c:1},
+{q:"47. What is important in problem-solving speech?",o:["Blaming","Clear explanation","Silence","Speed"],c:1},
+{q:"48. To suggest a solution, you can say:",o:["I don’t care","Maybe we can try…","That’s impossible","No idea"],c:1},
+{q:"49. Good speaking skills help to:",o:["Create conflict","Solve problems","Avoid work","Waste time"],c:1},
+{q:"50. When finishing a conversation, you should:",o:["Walk away suddenly","End politely","Interrupt","Stay silent"],c:1},
+
+/* --- FLUENCY & CONFIDENCE --- */
+{q:"51. Confidence in speaking comes from:",o:["Practice","Luck","Talent only","Silence"],c:0},
+{q:"52. Speaking fluently means:",o:["Speaking loudly","Speaking smoothly","Speaking fast","Speaking long"],c:1},
+{q:"53. Pausing while speaking helps to:",o:["Forget ideas","Organize thoughts","Confuse listeners","End speech"],c:1},
+{q:"54. Eye contact helps to:",o:["Intimidate","Engage listeners","Distract","Avoid attention"],c:1},
+{q:"55. Body language should be:",o:["Closed","Natural","Aggressive","Hidden"],c:1},
+
+/* --- REAL-LIFE SPEAKING --- */
+{q:"56. When answering questions, you should:",o:["Rush","Listen carefully","Interrupt","Avoid"],c:1},
+{q:"57. Good pronunciation helps:",o:["Confuse","Improve understanding","Waste time","Reduce clarity"],c:1},
+{q:"58. Speaking politely shows:",o:["Weakness","Respect","Fear","Silence"],c:1},
+{q:"59. A confident speaker usually sounds:",o:["Unclear","Calm","Angry","Nervous"],c:1},
+{q:"60. The main goal of speaking is to:",o:["Show power","Communicate ideas","Talk nonstop","Win arguments"],c:1}
+
+];
+
+
+const qDiv=document.getElementById("questions");
+let answers=new Array(questions.length).fill(null);
+
+questions.forEach((q,i)=>{
+    let box=document.createElement("div");
+    box.className="question";
+    box.innerHTML=`<b>${q.q}</b><br>`;
+    q.o.forEach((opt,idx)=>{
+        let d=document.createElement("div");
+        d.className="choice";
+        d.textContent=`${String.fromCharCode(65+idx)}. ${opt}`;
+        d.onclick=()=>{
+            if(answers[i]!==null) return;
+            answers[i]=idx;
+            d.classList.add("selected");
+        };
+        box.appendChild(d);
+    });
+    qDiv.appendChild(box);
+});
+
+function submitExam(){
+    let score=0;
+    answers.forEach((a,i)=>{
+        const box=qDiv.children[i];
+        const correct=questions[i].c;
+        const choices=box.querySelectorAll(".choice");
+
+        if(a===correct){
+            score++;
+            choices[a].classList.add("correct");
+        }else{
+            if(a!==null) choices[a].classList.add("wrong");
+            choices[correct].classList.add("correct");
+        }
+
+        box.innerHTML+=`
+        <div class="answer-review">
+            <b>Your Answer:</b> ${a!==null?questions[i].o[a]:"No Answer"}<br>
+            <b>Correct Answer:</b> ${questions[i].o[correct]}
+        </div>`;
+    });
+
+    document.getElementById("result").innerHTML=`
+    <h3>EXAM RESULT</h3>
+    Raw Score: ${score}/60<br>
+    20% Equivalent: ${(score/60*20).toFixed(2)}
+    `;
+}
+</script>
+<script>
+/* ===============================
+   STRICT EXAM SECURITY SYSTEM
+================================ */
+
+// Prevent refresh / close
+window.addEventListener("beforeunload", function (e) {
+    e.preventDefault();
+    e.returnValue = "Exam in progress. Leaving will submit your exam.";
+});
+
+// Disable copy, paste, cut, right-click
+["copy","paste","cut","contextmenu"].forEach(event=>{
+    document.addEventListener(event,e=>{
+        e.preventDefault();
+        alert("Action disabled during examination.");
+    });
+});
+
+// Disable text selection
+document.addEventListener("selectstart", e => e.preventDefault());
+
+// Detect Print Screen (PC)
+document.addEventListener("keyup", function (e) {
+    if (e.key === "PrintScreen" || e.keyCode === 44) {
+        securityViolation("Screenshot detected!");
+    }
+});
+
+// Detect Ctrl shortcuts
+document.addEventListener("keydown", function(e){
+    if (
+        e.ctrlKey &&
+        ["c","v","x","p","s","u"].includes(e.key.toLowerCase())
+    ) {
+        e.preventDefault();
+        securityViolation("Restricted keyboard shortcut!");
+    }
+});
+
+// Detect tab switch / minimize (PC & Mobile)
+let examLocked = false;
+
+function securityViolation(message){
+    if(examLocked) return;
+    examLocked = true;
+
+    alert(message + "\nYour exam will be submitted.");
+
+    submitExam(); // auto-submit
+}
+
+// Detect tab switching
+document.addEventListener("visibilitychange", function(){
+    if (document.hidden) {
+        securityViolation("You left the exam window!");
+    }
+});
+
+// Detect window blur (Alt+Tab / app switch)
+window.addEventListener("blur", function(){
+    securityViolation("Exam window lost focus!");
+});
+
+// Mobile: detect touch gestures (basic protection)
+let touchStartY = 0;
+document.addEventListener("touchstart", e=>{
+    touchStartY = e.touches[0].clientY;
+});
+
+document.addEventListener("touchmove", e=>{
+    let touchMoveY = e.touches[0].clientY;
+    if(Math.abs(touchMoveY - touchStartY) > 100){
+        securityViolation("Gesture detected!");
+    }
+});
+
+// Disable zoom (mobile)
+document.addEventListener('gesturestart', e => e.preventDefault());
+document.addEventListener('gesturechange', e => e.preventDefault());
+document.addEventListener('gestureend', e => e.preventDefault());
+
+</script>
+<audio id="alarmSound" loop>
+    <source src="https://image2url.com/r2/default/audio/1769311028308-f1317f8e-a263-48aa-b094-95803b516508.mp3" type="audio/mpeg">
+</audio>
+
+<div id="securityOverlay">
+    <h1>⚠ EXAM VIOLATION DETECTED ⚠<br>
+    SCREENSHOT AND COPY PASTE ARE NOT ALLOWED</h1>
+</div>
+<script>
+/* ===============================
+   MAXIMUM EXAM SECURITY SYSTEM
+================================ */
+
+let examFrozen = false;
+
+function freezeExam(reason){
+    if(examFrozen) return;
+    examFrozen = true;
+
+    // Freeze UI
+    document.body.classList.add("freeze");
+
+    // Show blinking warning
+    document.getElementById("securityOverlay").style.display="flex";
+
+    // Play alarm
+    const alarm=document.getElementById("alarmSound");
+    alarm.volume=1;
+    alarm.play().catch(()=>{});
+
+    // Alert backup
+    alert(reason + "\nExam will be submitted automatically.");
+
+    // Auto submit after 3 seconds
+    setTimeout(()=>{
+        submitExam();
+    },3000);
+}
+
+/* BLOCK LEAVING */
+window.addEventListener("beforeunload",e=>{
+    e.preventDefault();
+    e.returnValue="";
+});
+
+/* SCREENSHOT DETECTION (PC) */
+document.addEventListener("keyup",e=>{
+    if(e.key==="PrintScreen"||e.keyCode===44){
+        freezeExam("Screenshot detected!");
+    }
+});
+
+/* TAB SWITCH / APP SWITCH */
+document.addEventListener("visibilitychange",()=>{
+    if(document.hidden){
+        freezeExam("You left the exam window!");
+    }
+});
+
+window.addEventListener("blur",()=>{
+    freezeExam("Exam window lost focus!");
+});
+
+/* KEYBOARD SHORTCUTS */
+document.addEventListener("keydown",e=>{
+    if(
+        e.ctrlKey &&
+        ["c","v","x","p","s","u"].includes(e.key.toLowerCase())
+    ){
+        e.preventDefault();
+        freezeExam("Restricted key pressed!");
+    }
+});
+
+/* COPY / PASTE / RIGHT CLICK */
+["copy","paste","cut","contextmenu"].forEach(evt=>{
+    document.addEventListener(evt,e=>{
+        e.preventDefault();
+        freezeExam("Restricted action detected!");
+    });
+});
+
+/* MOBILE GESTURE DETECTION */
+let touchY=0;
+document.addEventListener("touchstart",e=>{
+    touchY=e.touches[0].clientY;
+});
+
+document.addEventListener("touchmove",e=>{
+    if(Math.abs(e.touches[0].clientY-touchY)>120){
+        freezeExam("Gesture navigation detected!");
+    }
+});
+
+/* DISABLE ZOOM */
+["gesturestart","gesturechange","gestureend"].forEach(evt=>{
+    document.addEventListener(evt,e=>e.preventDefault());
+});
+</script>
+<script>
+/* === UNLOCK AUDIO ON FIRST INTERACTION === */
+let audioUnlocked = false;
+
+function unlockAudio(){
+    if(audioUnlocked) return;
+    const alarm = document.getElementById("alarmSound");
+    alarm.play().then(()=>{
+        alarm.pause();
+        alarm.currentTime = 0;
+        audioUnlocked = true;
+        console.log("Audio unlocked");
+    }).catch(()=>{});
+}
+
+["click","keydown","touchstart"].forEach(evt=>{
+    document.addEventListener(evt, unlockAudio, { once:true });
+});
+</script>
+
+</body>
+</html>

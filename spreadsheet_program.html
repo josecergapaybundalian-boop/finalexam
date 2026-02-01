@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Final Examination - Spreadsheet Program</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:#e0f7ff;
+    user-select:none;
+}
+.flash-alert {
+    animation: flash 0.4s alternate infinite;
+}
+@keyframes flash {
+    from { background: black; }
+    to { background: transparent; }
+}
+@media print{
+    body{background:#fff;color:#000}
+    button,.timer{display:none}
+}
+
+.header{text-align:center;padding:20px}
+.header img{width:130px}
+
+.timer{text-align:center;font-size:22px;font-weight:bold;margin-bottom:10px}
+
+.container{
+    width:90%;
+    margin:auto;
+    background:rgba(0,0,0,0.45);
+    padding:20px;
+    border-radius:12px;
+}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px}
+td{border:1px solid #00e5ff;padding:8px}
+input{width:96%;padding:6px}
+
+.question{
+    border:1px solid #00e5ff;
+    padding:12px;
+    margin-bottom:14px;
+    border-radius:8px;
+}
+
+.choice{
+    padding:6px;
+    margin:6px 0;
+    border:1px solid #aaa;
+    border-radius:5px;
+    cursor:pointer;
+}
+.choice.selected{background:#ccefff;color:#000}
+.choice.correct{background:#d4edda;color:#000}
+.choice.wrong{background:#f8d7da;color:#000}
+
+.answer-review{
+    margin-top:8px;
+    padding:6px;
+    background:rgba(255,255,255,0.1);
+    border-radius:6px;
+    font-size:14px;
+}
+
+button{
+    padding:12px 24px;
+    font-size:16px;
+    border:none;
+    border-radius:8px;
+    margin:10px;
+    cursor:pointer;
+}
+
+/* === SECURITY WARNING OVERLAY === */
+#securityOverlay{
+    position:fixed;
+    top:0;left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.9);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    animation:blink 0.6s infinite;
+}
+
+#securityOverlay h1{
+    color:#fff;
+    font-size:38px;
+    text-align:center;
+}
+
+@keyframes blink{
+    0%{opacity:1;}
+    50%{opacity:0.2;}
+    100%{opacity:1;}
+}
+
+/* Freeze exam */
+.freeze *{
+    pointer-events:none !important;
+}
+
+#result{text-align:center;font-size:18px;margin-top:20px}
+</style>
+</head>
+
+<body
+oncopy="return false"
+oncut="return false"
+onpaste="return false"
+oncontextmenu="return false"
+ondragstart="return false"
+onselectstart="return false">
+
+<div class="header">
+    <img src="https://image2url.com/r2/default/images/1769014503355-aed3a663-edee-4712-974b-a5aa8787a845.png">
+    <h1>FINAL EXAMINATION</h1>
+    <h2>Chumphon Vocational College</h2>
+    <h3>Spreadsheet Program</h3>
+</div>
+
+<div class="timer" id="timer">Time Remaining: 60:00</div>
+
+<div class="container">
+
+<table>
+<tr><td>Subject</td><td><input value="Spreadsheet Program"></td></tr>
+<tr><td>Name of Student</td><td><input></td></tr>
+<tr><td>Student ID Number</td><td><input></td></tr>
+<tr><td>Department</td><td><input></td></tr>
+<tr><td>Teacher</td><td><input></td></tr>
+</table>
+
+<div id="questions"></div>
+
+<div style="text-align:center">
+    <button onclick="submitExam()">Submit Examination</button>
+    <button onclick="window.print()">Save PDF</button>
+</div>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+// Disable key shortcuts
+document.addEventListener('keydown',function(e){
+    if(e.ctrlKey && ['c','v','p','C','V','P'].includes(e.key)){
+        e.preventDefault();
+        alert("Copying, pasting, and printing are disabled.");
+    }
+});
+
+// Detect PrintScreen
+document.addEventListener('keyup',function(e){
+    if(e.key === "PrintScreen" || e.keyCode === 44){
+        alert("Screenshots are not allowed!");
+        document.body.classList.add("flash-alert");
+        setTimeout(()=>document.body.classList.remove("flash-alert"),2000);
+    }
+});
+
+// Warn on blur
+window.addEventListener('blur',function(){
+    alert("Do not leave the exam window!");
+});
+</script>
+
+<script>
+let timeLeft=3600;
+setInterval(()=>{
+    let m=Math.floor(timeLeft/60);
+    let s=timeLeft%60;
+    document.getElementById("timer").textContent=
+    `Time Remaining: ${m}:${s.toString().padStart(2,"0")}`;
+    timeLeft--;
+},1000);
+
+const questions=[
+{q:"1. What is a spreadsheet primarily used for?",o:["Writing essays","Organizing and analyzing data","Making videos","Photo editing"],c:1}, // :contentReference[oaicite:1]{index=1}
+{q:"2. What is the main area where data is entered in a spreadsheet called?",o:["Formula bar","Cell","Chart","Header"],c:1}, // :contentReference[oaicite:2]{index=2}
+{q:"3. Which symbol must a formula begin with?",o:["#","?","=","!"],c:2}, // :contentReference[oaicite:3]{index=3}
+{q:"4. The function to add a range of cells is:",o:["ADD()","SUM()","TOTAL()","PLUS()"],c:1}, // :contentReference[oaicite:4]{index=4}
+{q:"5. What does the AVERAGE function compute?",o:["Lowest value","Highest value","Mean of range","Variance"],c:2}, // :contentReference[oaicite:5]{index=5}
+{q:"6. How is cell address B3 interpreted?",o:["Column B row 3","Row B column 3","Cell name","Data type"],c:0}, // :contentReference[oaicite:6]{index=6}
+{q:"7. Which chart type shows proportions of a whole?",o:["Line","Pie","Scatter","Histogram"],c:1},
+{q:"8. Which feature highlights cells meeting criteria with formatting?",o:["Filter","Insert","Conditional Formatting","Text to Columns"],c:2}, // :contentReference[oaicite:7]{index=7}
+{q:"9. What does the COUNTBLANK function count?",o:["All cells","Blank cells","Text only","Numbers only"],c:1},
+{q:"10. What is a workbook?",o:["Single cell","Collection of worksheets","Single chart","Data type"],c:1}, // :contentReference[oaicite:8]{index=8}
+{q:"11. What is a cell in a spreadsheet?",o:["Intersection of row/column","Button","Chart area","Header"],c:0},
+{q:"12. What does the MAX function return?",o:["Smallest value","Largest value","Average","Count"],c:1},
+{q:"13. To freeze the top row, use which tab?",o:["View","Home","Data","Insert"],c:0}, // :contentReference[oaicite:9]{index=9}
+{q:"14. What is a Pivot Table used for?",o:["Formatting text","Summarizing data","Spell check","Print settings"],c:1}, // :contentReference[oaicite:10]{index=10}
+{q:"15. Which feature sorts data in ascending order?",o:["Sort A to Z","Data Validation","Filter","Conditional Formatting"],c:0},
+{q:"16. What does the IF function do?",o:["Adds values","Creates text","Performs logical test","Formats cells"],c:2},
+{q:"17. What is relative reference?",o:["Fixed position","Changes when copied","Always zero","Only text"],c:1},
+{q:"18. What is absolute reference?",o:["Locked reference","Moves when copied","Header only","Footer only"],c:0},
+{q:"19. What does the CONCATENATE function do?",o:["Join text","Split cells","Sort data","Add numbers"],c:0},
+{q:"20. The function TODAY() returns:",o:["Current date","Current time","Cell address","Sum"],c:0},
+{q:"21. Which key selects multiple adjacent cells?",o:["Ctrl","Shift","Alt","Tab"],c:1},
+{q:"22. What is the fill handle used for?",o:["Formatting","Copying data quickly","Printing","Spell check"],c:1},
+{q:"23. How do you apply a border around selected cells?",o:["Insert menu","Right-click","Borders tool","Help menu"],c:2},
+{q:"24. What does the VLOOKUP function do?",o:["Look up data vertically","Sort data ascending","Format text","Display error"],c:0},
+{q:"25. What is the shortcut for Undo?",o:["Ctrl+Z","Ctrl+Y","Ctrl+P","Ctrl+S"],c:0},
+{q:"26. Which function counts numbers only?",o:["COUNTA()","COUNT()","COUNTBLANK()","SUM()"],c:1},
+{q:"27. What is data validation used for?",o:["Allow only valid entries","Replace cells","Format text","Delete rows"],c:0},
+{q:"28. To insert a column, use:",o:["Insert menu","Review menu","View menu","Data menu"],c:0},
+{q:"29. Which function finds the smallest value?",o:["MIN()","MAX()","SUM()","AVERAGE()"],c:0},
+{q:"30. What feature allows collaboration on a sheet?",o:["Single user only","Shared editing","Print preview","Header only"],c:1},
+{q:"31. What type of data can spreadsheets import?",o:["Numbers","Text","Images","All of these"],c:3},
+{q:"32. To view formulas instead of results, press:",o:["Ctrl+`","Ctrl+F","Ctrl+H","Ctrl+C"],c:0},
+{q:"33. What does SORT do?",o:["Organizes data","Deletes data","Formats cells","Print sheet"],c:0},
+{q:"34. Which function finds text length?",o:["LEN()","SUM()","COUNT()","AVERAGE()"],c:0},
+{q:"35. What does TRIM() remove?",o:["Spaces","Numbers","Text","Cells"],c:0},
+{q:"36. Which command saves workbook as PDF?",o:["Export","Sort","Filter","Help"],c:0},
+{q:"37. What is a named range?",o:["Cells with name","Chart type","Data type","Column header"],c:0},
+{q:"38. What does the TEXT function do?",o:["Reformats numbers as text","Formats date","Deletes cells","Adds numbers"],c:0},
+{q:"39. What type of chart compares categories?",o:["Column chart","Text chart","Pie only","Histogram"],c:0},
+{q:"40. Which tab contains formulas?",o:["Formulas tab","Insert tab","View tab","Review tab"],c:0},
+{q:"41. Which function rounds numbers?",o:["ROUND()","SUM()","AVERAGE()","COUNT()"],c:0},
+{q:"42. What does the FIND function locate?",o:["Text within text","Numbers","Dates","Errors"],c:0},
+{q:"43. Which feature removes duplicate rows?",o:["Remove Duplicates","Sort","Filter","Print"],c:0},
+{q:"44. What type of reference in formulas uses $ signs?",o:["Absolute","Relative","Mixed","None"],c:0},
+{q:"45. The function NOW() returns:",o:["Current date & time","Only date","Only time","Cell address"],c:0},
+{q:"46. What does HLOOKUP search across?",o:["Rows","Columns","Cells","Sheets"],c:0},
+{q:"47. What is an example file extension?",o:[".xlsx",".docx",".pptx",".txt"],c:0},
+{q:"48. To change column width, you:",o:["Drag column border","Edit cell","Print sheet","Sort"],c:0},
+{q:"49. Which function returns unique values?",o:["UNIQUE()","SUM()","AVERAGE()","COUNT()"],c:0},
+{q:"50. What tool creates visual reports from data?",o:["PivotChart","Spell check","AutoFilter","Header"],c:0},
+{q:"51. What does the SUBTOTAL function do?",o:["Performs calculation on filtered data","Deletes rows","Formats text","Sorts data"],c:0},
+{q:"52. Which logic function returns TRUE if all conditions met?",o:["AND()","OR()","NOT()","IF()"],c:0},
+{q:"53. What does Flash Fill do?",o:["Automatically fills patterned data","Sort data","Delete duplicates","Print"],c:0},
+{q:"54. What function returns the date portion?",o:["DATEVALUE()","NOW()","TIME()","DAY()"],c:0},
+{q:"55. Which data type can spreadsheets handle?",o:["Numbers","Text","Dates","All of these"],c:3},
+{q:"56. What does CONCAT do?",o:["Join text","Sum numbers","Count cells","Format data"],c:0},
+{q:"57. Which chart type shows trends over time?",o:["Line chart","Pie chart","Column chart","Scatter"],c:0},
+{q:"58. What does the AVERAGEIF function do?",o:["Average with condition","Sum with condition","Count data","Format text"],c:0},
+{q:"59. Which function returns errors if lookup fails?",o:["VLOOKUP","XLOOKUP","LOOKUP","INDEX"],c:0},
+{q:"60. Which operation protects cells?",o:["Protect Sheet","Sort","Filter","Copy"],c:0}
+];
+
+const qDiv=document.getElementById("questions");
+let answers=new Array(questions.length).fill(null);
+
+questions.forEach((q,i)=>{
+    let box=document.createElement("div");
+    box.className="question";
+    box.innerHTML=`<b>${q.q}</b><br>`;
+    q.o.forEach((opt,idx)=>{
+        let d=document.createElement("div");
+        d.className="choice";
+        d.textContent=`${String.fromCharCode(65+idx)}. ${opt}`;
+        d.onclick=()=>{
+            if(answers[i]!==null) return;
+            answers[i]=idx;
+            d.classList.add("selected");
+        };
+        box.appendChild(d);
+    });
+    qDiv.appendChild(box);
+});
+
+function submitExam(){
+    let score=0;
+    answers.forEach((a,i)=>{
+        const box=qDiv.children[i];
+        const correct=questions[i].c;
+        const choices=box.querySelectorAll(".choice");
+
+        if(a===correct){
+            score++;
+            choices[a].classList.add("correct");
+        }else{
+            if(a!==null) choices[a].classList.add("wrong");
+            choices[correct].classList.add("correct");
+        }
+
+        box.innerHTML+=`
+        <div class="answer-review">
+            <b>Your Answer:</b> ${a!==null?questions[i].o[a]:"No Answer"}<br>
+            <b>Correct Answer:</b> ${questions[i].o[correct]}
+        </div>`;
+    });
+
+    document.getElementById("result").innerHTML=`
+    <h3>EXAM RESULT</h3>
+    Raw Score: ${score}/60<br>
+    30% Equivalent: ${(score/60*30).toFixed(2)}
+    `;
+}
+</script>
+<script>
+/* ===============================
+   STRICT EXAM SECURITY SYSTEM
+================================ */
+
+// Prevent refresh / close
+window.addEventListener("beforeunload", function (e) {
+    e.preventDefault();
+    e.returnValue = "Exam in progress. Leaving will submit your exam.";
+});
+
+// Disable copy, paste, cut, right-click
+["copy","paste","cut","contextmenu"].forEach(event=>{
+    document.addEventListener(event,e=>{
+        e.preventDefault();
+        alert("Action disabled during examination.");
+    });
+});
+
+// Disable text selection
+document.addEventListener("selectstart", e => e.preventDefault());
+
+// Detect Print Screen (PC)
+document.addEventListener("keyup", function (e) {
+    if (e.key === "PrintScreen" || e.keyCode === 44) {
+        securityViolation("Screenshot detected!");
+    }
+});
+
+// Detect Ctrl shortcuts
+document.addEventListener("keydown", function(e){
+    if (
+        e.ctrlKey &&
+        ["c","v","x","p","s","u"].includes(e.key.toLowerCase())
+    ) {
+        e.preventDefault();
+        securityViolation("Restricted keyboard shortcut!");
+    }
+});
+
+// Detect tab switch / minimize (PC & Mobile)
+let examLocked = false;
+
+function securityViolation(message){
+    if(examLocked) return;
+    examLocked = true;
+
+    alert(message + "\nYour exam will be submitted.");
+
+    submitExam(); // auto-submit
+}
+
+// Detect tab switching
+document.addEventListener("visibilitychange", function(){
+    if (document.hidden) {
+        securityViolation("You left the exam window!");
+    }
+});
+
+// Detect window blur (Alt+Tab / app switch)
+window.addEventListener("blur", function(){
+    securityViolation("Exam window lost focus!");
+});
+
+// Mobile: detect touch gestures (basic protection)
+let touchStartY = 0;
+document.addEventListener("touchstart", e=>{
+    touchStartY = e.touches[0].clientY;
+});
+
+document.addEventListener("touchmove", e=>{
+    let touchMoveY = e.touches[0].clientY;
+    if(Math.abs(touchMoveY - touchStartY) > 100){
+        securityViolation("Gesture detected!");
+    }
+});
+
+// Disable zoom (mobile)
+document.addEventListener('gesturestart', e => e.preventDefault());
+document.addEventListener('gesturechange', e => e.preventDefault());
+document.addEventListener('gestureend', e => e.preventDefault());
+
+</script>
+<audio id="alarmSound" loop>
+    <source src="https://www.soundjay.com/buttons/sounds/beep-07.mp3" type="audio/mpeg">
+</audio>
+
+<div id="securityOverlay">
+    <h1>⚠ EXAM VIOLATION DETECTED ⚠<br>
+    SCREENSHOT AND COPY PASTE ARE NOT ALLOWED</h1>
+</div>
+<script>
+/* ===============================
+   MAXIMUM EXAM SECURITY SYSTEM
+================================ */
+
+let examFrozen = false;
+
+function freezeExam(reason){
+    if(examFrozen) return;
+    examFrozen = true;
+
+    // Freeze UI
+    document.body.classList.add("freeze");
+
+    // Show blinking warning
+    document.getElementById("securityOverlay").style.display="flex";
+
+    // Play alarm
+    const alarm=document.getElementById("alarmSound");
+    alarm.volume=1;
+    alarm.play().catch(()=>{});
+
+    // Alert backup
+    alert(reason + "\nExam will be submitted automatically.");
+
+    // Auto submit after 3 seconds
+    setTimeout(()=>{
+        submitExam();
+    },3000);
+}
+
+/* BLOCK LEAVING */
+window.addEventListener("beforeunload",e=>{
+    e.preventDefault();
+    e.returnValue="";
+});
+
+/* SCREENSHOT DETECTION (PC) */
+document.addEventListener("keyup",e=>{
+    if(e.key==="PrintScreen"||e.keyCode===44){
+        freezeExam("Screenshot detected!");
+    }
+});
+
+/* TAB SWITCH / APP SWITCH */
+document.addEventListener("visibilitychange",()=>{
+    if(document.hidden){
+        freezeExam("You left the exam window!");
+    }
+});
+
+window.addEventListener("blur",()=>{
+    freezeExam("Exam window lost focus!");
+});
+
+/* KEYBOARD SHORTCUTS */
+document.addEventListener("keydown",e=>{
+    if(
+        e.ctrlKey &&
+        ["c","v","x","p","s","u"].includes(e.key.toLowerCase())
+    ){
+        e.preventDefault();
+        freezeExam("Restricted key pressed!");
+    }
+});
+
+/* COPY / PASTE / RIGHT CLICK */
+["copy","paste","cut","contextmenu"].forEach(evt=>{
+    document.addEventListener(evt,e=>{
+        e.preventDefault();
+        freezeExam("Restricted action detected!");
+    });
+});
+
+/* MOBILE GESTURE DETECTION */
+let touchY=0;
+document.addEventListener("touchstart",e=>{
+    touchY=e.touches[0].clientY;
+});
+
+document.addEventListener("touchmove",e=>{
+    if(Math.abs(e.touches[0].clientY-touchY)>120){
+        freezeExam("Gesture navigation detected!");
+    }
+});
+
+/* DISABLE ZOOM */
+["gesturestart","gesturechange","gestureend"].forEach(evt=>{
+    document.addEventListener(evt,e=>e.preventDefault());
+});
+</script>
+<script>
+/* === UNLOCK AUDIO ON FIRST INTERACTION === */
+let audioUnlocked = false;
+
+function unlockAudio(){
+    if(audioUnlocked) return;
+    const alarm = document.getElementById("alarmSound");
+    alarm.play().then(()=>{
+        alarm.pause();
+        alarm.currentTime = 0;
+        audioUnlocked = true;
+        console.log("Audio unlocked");
+    }).catch(()=>{});
+}
+
+["click","keydown","touchstart"].forEach(evt=>{
+    document.addEventListener(evt, unlockAudio, { once:true });
+});
+</script>
+
+</body>
+</html>

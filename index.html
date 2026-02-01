@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Duxdeus1220 - Education Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Arial,sans-serif}
+
+body{
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+color:#e8f6ff;
+min-height:100vh;
+}
+
+/* NAV */
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 50px;
+background:rgba(0,0,0,0.45);
+backdrop-filter:blur(10px);
+}
+nav h1{color:#4fd1ff}
+
+/* LAYOUT */
+.main{
+display:grid;
+grid-template-columns:1fr 360px 220px;
+min-height:calc(100vh - 80px);
+}
+
+/* TAGLINE */
+.tagline{padding:40px}
+.tagline-frame{
+border:2px solid #4fd1ff;
+padding:35px;
+border-radius:20px;
+box-shadow:0 0 30px rgba(79,209,255,.4);
+text-align:center;
+}
+
+/* SECOND TAGLINE FRAME */
+.tagline-info{
+margin-top:25px;
+text-align:left;
+}
+
+.tagline-info h3{
+font-size:19px;
+margin-bottom:15px;
+color:#4fd1ff;
+}
+
+.tagline-info p{
+font-size:15px;
+line-height:1.7;
+opacity:.95;
+margin-bottom:12px;
+}
+
+.globe{
+width:100px;height:100px;
+margin:0 auto 15px;
+border-radius:50%;
+border:3px solid #4fd1ff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+animation:spin 6s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.tagline h2{font-size:32px;color:#4fd1ff;margin-bottom:10px}
+.tagline p{font-size:18px;opacity:.9}
+
+/* WHEEL */
+.wheel-container{
+display:flex;
+justify-content:center;
+align-items:center;
+perspective:1400px;
+}
+.wheel{
+position:relative;
+width:260px;
+height:260px;
+transform-style:preserve-3d;
+transition:.6s;
+}
+.wheel-item{
+position:absolute;
+width:100%;
+background:rgba(0,0,0,.65);
+padding:12px;
+border-radius:16px;
+box-shadow:0 0 14px rgba(79,209,255,.45);
+cursor:pointer;
+}
+.wheel-item img{
+width:100%;
+height:110px;
+object-fit:cover;
+border-radius:10px;
+}
+.wheel-item h3{
+text-align:center;
+font-size:15px;
+margin-top:8px;
+color:#4fd1ff;
+}
+
+/* SIDE */
+.side-menu{
+display:flex;
+flex-direction:column;
+gap:14px;
+padding:40px 30px;
+}
+.side-menu button{
+padding:14px;
+border-radius:14px;
+border:1px solid #4fd1ff;
+background:rgba(0,0,0,.5);
+color:#4fd1ff;
+cursor:pointer;
+font-weight:600;
+}
+.side-menu button:hover{background:#4fd1ff;color:#000}
+
+/* MODALS */
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.85);
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+.modal-content{
+background:#0f2a35;
+width:90%;
+max-width:900px;
+padding:30px;
+border-radius:20px;
+max-height:90vh;
+overflow-y:auto;
+}
+.close{
+float:right;
+font-size:22px;
+cursor:pointer;
+}
+.modal h2{color:#4fd1ff;margin-bottom:12px}
+.modal p{margin-bottom:10px;line-height:1.6}
+.modal ul{margin-left:25px;margin-bottom:18px}
+.modal li{margin-bottom:6px}
+
+input{
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:10px;
+border:none;
+}
+button.action{
+padding:12px 30px;
+border:none;
+border-radius:30px;
+background:#4fd1ff;
+cursor:pointer;
+font-size:16px;
+}
+
+/* CENTER FOOTER */
+.footer{
+background:rgba(0,0,0,0.55);
+backdrop-filter:blur(10px);
+border-top:1px solid rgba(79,209,255,.4);
+padding:30px 20px;
+text-align:center;
+}
+
+.footer-content{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:6px;
+}
+
+.footer h3{
+color:#4fd1ff;
+margin-bottom:4px;
+}
+
+.footer p{
+font-size:14px;
+opacity:.9;
+}
+
+/* LIGHTNING / ELECTRIC EFFECT ON GLOBE */
+.globe{
+position:relative;
+overflow:hidden;
+text-shadow:0 0 10px #4fd1ff;
+box-shadow:
+0 0 15px rgba(79,209,255,.6),
+0 0 30px rgba(79,209,255,.4),
+0 0 60px rgba(79,209,255,.25);
+}
+
+.globe::before,
+.globe::after{
+content:"";
+position:absolute;
+top:-50%;
+left:-50%;
+width:200%;
+height:200%;
+background:
+linear-gradient(
+120deg,
+transparent 40%,
+rgba(79,209,255,.9) 50%,
+transparent 60%
+);
+opacity:0;
+animation:lightningFlash 4s infinite;
+}
+
+.globe::after{
+animation-delay:2s;
+transform:rotate(90deg);
+}
+
+@keyframes lightningFlash{
+0%{opacity:0;transform:translate(0,0) rotate(0deg)}
+2%{opacity:1}
+5%{opacity:0}
+100%{opacity:0;transform:translate(30px,30px) rotate(360deg)}
+}
+
+/* TRAINING HUB */
+.training-section{
+padding:60px 50px;
+text-align:center;
+}
+
+.training-section h2{
+color:#4fd1ff;
+font-size:32px;
+margin-bottom:10px;
+}
+
+.training-subtitle{
+opacity:.9;
+margin-bottom:40px;
+}
+
+.training-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:30px;
+}
+
+.training-card{
+background:rgba(0,0,0,.55);
+border:1px solid rgba(79,209,255,.4);
+border-radius:20px;
+padding:30px;
+box-shadow:0 0 20px rgba(79,209,255,.25);
+transition:.3s;
+}
+
+.training-card:hover{
+transform:translateY(-6px);
+box-shadow:0 0 35px rgba(79,209,255,.45);
+}
+
+.training-card h3{
+color:#4fd1ff;
+margin-bottom:10px;
+}
+
+.training-card p{
+font-size:14px;
+opacity:.9;
+margin-bottom:20px;
+}
+
+.training-card button{
+padding:10px 26px;
+border-radius:30px;
+border:none;
+background:#4fd1ff;
+cursor:pointer;
+font-weight:600;
+}
+
+.auth-modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.7);
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+.auth-box{
+width:320px;
+background:#0c1620;
+padding:25px;
+border-radius:15px;
+box-shadow:0 0 25px rgba(79,209,255,.5);
+color:#fff;
+}
+
+.skills-container{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:25px;
+  padding:40px;
+}
+
+.skill-card{
+  background:rgba(0,0,0,0.45);
+  border:1px solid #4fd1ff;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 0 20px rgba(79,209,255,.25);
+  transition:.3s;
+}
+
+.skill-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 0 30px rgba(79,209,255,.5);
+}
+
+.skill-card img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+}
+
+.skill-card h3{
+  color:#4fd1ff;
+  padding:15px 15px 5px;
+}
+
+.skill-card p{
+  padding:0 15px 20px;
+  font-size:14px;
+  opacity:.9;
+}
+
+.skill-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.tutorial-section{
+  padding:60px 40px;
+  text-align:center;
+}
+
+.section-title{
+  color:#4fd1ff;
+  font-size:30px;
+  margin-bottom:10px;
+}
+
+.section-subtitle{
+  max-width:800px;
+  margin:0 auto 40px;
+  opacity:.9;
+  font-size:16px;
+}
+
+.tutorial-container{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:25px;
+}
+
+.tutorial-card{
+  background:rgba(0,0,0,0.45);
+  border:1px solid #4fd1ff;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 0 20px rgba(79,209,255,.25);
+  transition:.3s;
+  text-align:left;
+}
+
+.tutorial-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 0 30px rgba(79,209,255,.5);
+}
+
+.tutorial-card img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+}
+
+.tutorial-card h3{
+  color:#4fd1ff;
+  padding:15px 15px 5px;
+}
+
+.tutorial-card p{
+  padding:0 15px 20px;
+  font-size:14px;
+  opacity:.9;
+}
+
+.tutorial-cta{
+  margin-top:40px;
+}
+
+.tutorial-cta button{
+  padding:14px 36px;
+  font-size:16px;
+  border-radius:30px;
+  border:none;
+  background:#4fd1ff;
+  color:#000;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.tutorial-card{
+  position:relative;
+}
+
+.price-tag{
+  position:absolute;
+  top:12px;
+  right:12px;
+  background:#4fd1ff;
+  color:#000;
+  padding:6px 14px;
+  border-radius:20px;
+  font-weight:bold;
+  font-size:14px;
+  box-shadow:0 0 10px rgba(79,209,255,.6);
+}
+
+.portal-btn{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #4fd1ff;
+  background:rgba(0,0,0,.5);
+  color:#4fd1ff;
+  cursor:pointer;
+  font-weight:600;
+  transition:background .3s,color .3s;
+}
+
+.portal-btn:hover{
+  background:#4fd1ff;
+  color:#000;
+}
+
+.nav-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.nav-brand img{
+  height:180px;
+  width:auto;
+}
+
+.shine-text{
+  position:relative;
+  color:#4fd1ff;
+  overflow:hidden;
+}
+
+/* light sweep */
+.shine-text::after{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:60%;
+  height:100%;
+  background:linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,.6),
+    transparent
+  );
+  animation:shine 3.5s infinite;
+}
+
+@keyframes shine{
+  0%{left:-100%}
+  60%{left:120%}
+  100%{left:120%}
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <img src="https://image2url.com/r2/default/images/1769355563426-8239479f-d633-483f-a7d5-f779717d684f.png" alt="Portal Logo">
+      <div class="nav-title">
+      <h1 class="shine-text">Integrated Learning, Tutorials, Innovation, and Assessment System</h1>
+      <p>Empowering Students Through Structured Learning and Evaluation</p>
+    </div>
+  </div>
+</nav>
+    
+
+
+<div class="main">
+
+<div class="tagline">
+<div class="tagline-frame">
+  <div class="globe">EDU 1021</div>
+  <h2>Assess Today. Excel Tomorrow.</h2>
+  <p class="tagline-sub">
+    A smart digital gateway for modern academic assessment.
+  </p>
+</div>
+<div class="tagline-frame tagline-info">
+  <h3>Integrated Learning, Tutorials, Innovation, and Assessment System</h3>
+
+  <p>
+    The Integrated Learning, Tutorials, Innovation, and Assessment Management System 
+    is a comprehensive platform that unifies learning resources, tutorial programs, 
+    innovative tools, and examination systems to support student development and accurate 
+    academic assessment.
+  </p>
+</div>
+</div>
+<div class="wheel-container">
+<div class="wheel" id="wheel">
+
+<div class="wheel-item" onclick="openIT()">
+<img src="https://image2url.com/r2/default/images/1769156488845-74827d7d-9a61-4855-9c42-230ded06b998.png">
+<h3>English for Information Technology</h3>
+</div>
+
+<div class="wheel-item" onclick="openWebDev()">
+<img src="https://images.unsplash.com/photo-1547658719-da2b51169166">
+<h3>Website Development</h3>
+</div>
+
+<div class="wheel-item" onclick="openECom()">
+<img src="https://image2url.com/r2/default/images/1769156374452-71da8ec9-70a3-4c80-b215-0b8b4f5af59e.png">
+<h3>Basic E-Commerce</h3>
+</div>
+
+<div class="wheel-item" onclick="openStats()">
+<img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71">
+<h3>Statistical Software Package</h3>
+</div>
+
+<div class="wheel-item" onclick="openSpreadsheet()">
+<img src="https://image2url.com/r2/default/images/1769156184945-b2189491-7e81-41e0-aa73-4b6df5509cad.png">
+<h3>Spreadsheet Program</h3>
+</div>
+
+<div class="wheel-item" onclick="openListeningSpeaking()">
+<img src="https://image2url.com/r2/default/images/1769155991609-157a765e-fde5-410c-b1ac-16281ca44eaf.png">
+<h3>English for Listening and Speaking</h3>
+</div>
+
+<div class="wheel-item" onclick="openMultimedia()">
+<img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620">
+<h3>Multimedia Program</h3>
+</div>
+
+</div>
+</div>
+
+<div class="side-menu">
+<button>Developer</button>
+<button>Contact Us</button>
+<button>Services</button>
+<button>Courses</button>
+<button onclick="openRegister()">Register</button>
+<button onclick="openLogin()">Login</button>
+
+</div>
+
+</div>
+  </div>
+</section>
+
+<!-- SUBJECT MODAL -->
+<div class="modal" id="subjectModal">
+<div class="modal-content">
+<span class="close" onclick="closeAll()">✖</span>
+<h2 id="modalTitle"></h2>
+<div id="modalBody"></div>
+<button class="action" onclick="openRegister()">Take Exam</button>
+</div>
+</div>
+
+<!-- REGISTER -->
+<div class="modal" id="registerModal">
+<div class="modal-content">
+<span class="close" onclick="closeAll()">✖</span>
+<h2>Student Registration</h2>
+<input placeholder="Full name">
+<input placeholder="Email Address">
+<input placeholder="Contact Number">
+<input placeholder="Username">
+<input type="password" placeholder="Password">
+<br><br>
+<button class="action" onclick="registerStudent()">Register</button>
+<p id="registerMsg" style="color:#4fd1ff;text-align:center;"></p>
+
+</div>
+</div>
+
+<!-- LOGIN -->
+<div class="modal" id="loginModal">
+<div class="modal-content">
+<span class="close" onclick="closeAll()">✖</span>
+<h2>Student Login</h2>
+<input placeholder="Username">
+<input type="password" placeholder="Password">
+<br><br>
+
+<button class="action" onclick="loginStudent()">Login</button>
+<p id="loginMsg" style="color:red;text-align:center;"></p>
+
+</div>
+</div>
+
+<script>
+const wheel=document.getElementById("wheel");
+const items=document.querySelectorAll(".wheel-item");
+let angle=0,step=360/items.length,currentExam="";
+
+items.forEach((item,i)=>{
+item.style.transform=`rotateX(${i*step}deg) translateZ(200px)`;
+});
+
+wheel.addEventListener("wheel",e=>{
+e.preventDefault();
+angle+=e.deltaY>0?step:-step;
+wheel.style.transform=`rotateX(${angle}deg)`;
+},{passive:false});
+
+const subjectModal=document.getElementById("subjectModal");
+const registerModal=document.getElementById("registerModal");
+const loginModal=document.getElementById("loginModal");
+
+function closeAll(){
+subjectModal.style.display="none";
+registerModal.style.display="none";
+loginModal.style.display="none";
+}
+function openRegister(){closeAll();registerModal.style.display="flex";}
+function openLogin(){closeAll();loginModal.style.display="flex";}
+function openExam(){
+  if(localStorage.getItem("loggedIn")==="true"){
+    window.location.href = currentExam;
+  }
+}
+
+
+/* SUBJECT DETAILS — VERBATIM */
+
+function openIT(){
+currentExam="english_for_information_technology.html";
+subjectModal.style.display="flex";
+modalTitle.innerText="English for Information Technology";
+modalBody.innerHTML=`
+<p><b>Course Code:</b> 20000-1218</p>
+
+<p><b>Course Objectives:</b></p>
+<ul>
+<li>Know and understand the principles of using English for information technology work.</li>
+<li>Able to listen, watch, speak, read, and write English for information technology work.</li>
+<li>Recognize the importance and benefits of using IT to develop English skills.</li>
+</ul>
+
+<p><b>Course Competencies:</b></p>
+<ul>
+<li>Read about IT usage in daily life.</li>
+<li>Discuss IT-related work situations.</li>
+<li>Write posts on social media.</li>
+<li>Use IT to develop English skills.</li>
+</ul>
+
+<p><b>Course Description:</b><br>
+This course focuses on practicing listening, viewing, speaking, reading, and writing English related to information technology,
+including vocabulary, communication, operating systems, mobile devices, social media, online learning, applications, and writing posts.
+</p>`;
+}
+
+function openWebDev(){
+currentExam="website_development.html";
+subjectModal.style.display="flex";
+modalTitle.innerText="Website Development";
+modalBody.innerHTML=`
+<p><b>Course Code:</b> 21910-2016</p>
+
+<p><b>Course Objectives:</b></p>
+<ul>
+<li>Understand website processes and structures.</li>
+<li>Create websites using ready-made software.</li>
+<li>Develop meticulous and professional work habits.</li>
+<li>Apply websites for digital business.</li>
+</ul>
+
+<p><b>Course Competencies:</b></p>
+<ul>
+<li>Explain website processes and structures.</li>
+<li>Create websites for digital business.</li>
+<li>Apply websites for business purposes.</li>
+</ul>
+
+<p><b>Course Description:</b><br>
+Study and practice website development processes, page design, server simulation, ready-made tools,
+multimedia integration, uploading, publishing, and business application.
+</p>`;
+}
+
+function openECom(){
+currentExam="basic_e_commerce.html";
+subjectModal.style.display="flex";
+modalTitle.innerText="Basic E-Commerce";
+modalBody.innerHTML=`
+<p><b>Course Code:</b> 21910-2016</p>
+
+<p><b>Course Objectives:</b></p>
+<ul>
+<li>Understand principles of e-commerce and transactions.</li>
+<li>Use software packages to develop e-commerce systems.</li>
+<li>Apply e-commerce principles and software tools.</li>
+<li>Develop positive and meticulous work habits.</li>
+</ul>
+
+<p><b>Course Competencies:</b></p>
+<ul>
+<li>Explain e-commerce and transactions according to principles.</li>
+<li>Develop an e-commerce system.</li>
+<li>Apply principles and ready-made software.</li>
+</ul>
+
+<p><b>Course Description:</b><br>
+This course covers e-commerce fundamentals, processes, types, payment systems, threats, fraud, ethics,
+advantages and disadvantages, and the use of software for developing e-commerce systems.
+</p>`;
+}
+
+function openStats(){
+currentExam="statistics_program.html";
+subjectModal.style.display="flex";
+modalTitle.innerText="Statistical Software Package";
+modalBody.innerHTML=`
+<p><b>Course Code:</b> 20204-2106</p>
+
+<p><b>Course Objectives:</b></p>
+<p>To achieve the following:</p>
+<ul>
+<li>Understand the principles of statistics.</li>
+<li>Understand the operating principles of statistical software.</li>
+<li>Be able to use commands to calculate statistical values ​​using statistical software.</li>
+<li>Be able to use commands to create statistical data reports and charts.</li>
+<li>Develop a positive attitude and good work habits in using computer programs with meticulousness and accuracy.</li>
+</ul>
+
+<p><b>Course Competencies:</b></p>
+<ul>
+<li>Demonstrate knowledge of statistical principles.</li>
+<li>Demonstrate knowledge of the operation of statistical software packages.</li>
+<li>Perform statistical calculations using commands in statistical software packages.</li>
+<li>Perform statistical report and chart generation using commands.</li>
+</ul>
+
+<p><b>Course Description:</b><br>
+This course covers the study and practice of statistical principles, types of statistics, basic statistical calculations,
+data collection tools, data preparation, the operation of statistical software packages, using statistical calculation
+commands in software packages, and creating statistical reports and charts.
+</p>`;
+}
+
+function openSpreadsheet(){
+currentExam="spreadsheet_program.html";
+subjectModal.style.display="flex";
+modalTitle.innerText="Spreadsheet Program";
+modalBody.innerHTML=`
+<p><b>Course Code:</b> 21910-2005</p>
+
+<p><b>Course Objectives:</b></p>
+<ul>
+<li>Understand the principles of spreadsheet software operation.</li>
+<li>Possess skills in using spreadsheet software for formatting, adjusting data, inserting objects in worksheets, using formulas and functions for calculations, printing worksheets, and protecting worksheets.</li>
+<li>Have a positive attitude and good work habits in performing computer tasks with meticulousness and thoroughness.</li>
+<li>Be able to apply spreadsheet software in professional work.</li>
+</ul>
+
+<p><b>Course Competencies:</b></p>
+<ul>
+<li>Demonstrate knowledge of spreadsheet program operation according to principles.</li>
+<li>Use spreadsheet programs to format, customize data, insert objects in worksheets, use formulas and functions for calculations, print worksheets, and protect worksheets according to principles and processes.</li>
+<li>Prepare reports in the form of charts and tables to analyze data according to principles and processes.</li>
+<li>Analyze in-depth data in digital business according to principles and processes.</li>
+<li>Apply spreadsheet programs in professional work.</li>
+</ul>
+
+<p><b>Course Description:</b><br>
+This course covers the study and practice of using spreadsheet software for managing spreadsheets, customizing data in worksheets, formatting data, printing worksheets, using formulas and functions for calculations, inserting objects into worksheets, protecting worksheets, performing in-depth data analytics, and applying tools to create reports in the form of charts and data analysis tables (pivot tables).
+</p>`;
+}
+
+function openListeningSpeaking(){
+currentExam="english_for_listening_reading_and_speaking.html";
+subjectModal.style.display="flex";
+modalTitle.innerText="English for Listening and Speaking";
+modalBody.innerHTML=`
+<p><b>Course Code:</b> 20000-1203</p>
+
+<p><b>Course Objective:</b></p>
+<ul>
+<li>Understand English vocabulary, idioms, and the principles of listening and speaking English in various situations.</li>
+<li>Be able to listen, speak, and respond in English in various situations at work and in daily life.</li>
+<li>Develop a positive attitude and good habits, recognize the importance and benefits of using English for listening and speaking.</li>
+<li>Be able to apply English listening and speaking skills in conversations at work and in daily life.</li>
+</ul>
+
+<p><b>Course Competencies:</b></p>
+<ul>
+<li>Demonstrate knowledge of English vocabulary, idioms, and listening and speaking principles used in work and daily life conversations.</li>
+<li>Listen, speak, and respond in English in various work and daily life situations, adhering to diverse social and cultural etiquette.</li>
+<li>Apply digital technology to develop English listening and speaking skills.</li>
+</ul>
+
+<p><b>Course Description:</b><br>
+This course focuses on practicing pronunciation of vocabulary and idioms according to the principles of English listening and speaking. Participants will engage in conversations in various situations using verbal and nonverbal communication. They will learn to organize and structure English communication skills learned through listening, and pronounce English vocabulary and idioms correctly according to social etiquette and diverse cultures. Finally, they will apply digital technology to further develop their English listening and speaking skills.
+</p>`;
+}
+
+function openMultimedia(){
+currentExam="multimedia_program.html";
+subjectModal.style.display="flex";
+modalTitle.innerText="Multimedia Program";
+
+/* shadow background (optional but recommended) */
+if(document.getElementById("subjectBg")){
+document.getElementById("subjectBg").style.backgroundImage =
+"url('https://images.unsplash.com/photo-1529107386315-e1a2ed48a620')";
+}
+
+modalBody.innerHTML=`
+<p><b>Course Code:</b> 20204-2110</p>
+
+<p><b>Course Objective:</b></p>
+<p>To achieve the following:</p>
+<ul>
+<li>Understand the principles of multimedia creation.</li>
+<li>Understand the principles of storyboard design.</li>
+<li>Be able to design, create, edit, and enhance multimedia content using multimedia software.</li>
+<li>Be able to produce multimedia content for professional work.</li>
+<li>Develop a positive attitude and good work habits in performing computer tasks with meticulousness and accuracy.</li>
+</ul>
+
+<p><b>Course Competencies:</b></p>
+<ul>
+<li>Demonstrate knowledge of multimedia creation principles.</li>
+<li>Demonstrate knowledge of storyboarding principles.</li>
+<li>Design, create, edit, and enhance multimedia content using multimedia software.</li>
+<li>Produce multimedia content for professional purposes.</li>
+</ul>
+
+<p><b>Course Description:</b><br>
+This course studies and practices the principles of multimedia creation, storyboard design, designing, creating, editing, and enhancing multimedia content using multimedia software, and professional multimedia production.
+</p>`;
+}
+
+</script>
+<section class="training-section">
+  <h2>Skill Development & Training Hub</h2>
+  <p class="training-subtitle">
+    Learn. Practice. Improve your skills beyond examinations.
+  </p>
+
+<div class="skills-container">
+   <a href="english-skills.html" class="skill-link">
+  <div class="skill-card">
+    <img src="https://image2url.com/r2/default/images/1769275998094-9a1b4fc9-38e8-4912-85ec-fa9ce5c7a9a1.png" alt="English Skills Training">
+    <h3>English Skills Training & Critical Thinking</h3>
+    <p>Enhance reading, writing, listening, speaking, pronunciation, and communication skills for academic, workplace, and daily-life use.</p>
+  </div>
+ </a>
+<a href="it-skills.html" class="skill-link">
+  <div class="skill-card">
+    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c" alt="Information Technology Skills">
+    <h3>Information Technology Skills</h3>
+    <p>Develop practical IT skills including computer operations, software usage, digital tools, and technology fundamentals.</p>
+  </div>
+</a>
+<a href="multimedia-skills.html" class="skill-link">
+  <div class="skill-card">
+    <img src="https://images.unsplash.com/photo-1492724441997-5dc865305da7" alt="Multimedia and Creative Skills">
+    <h3>Multimedia Program, Print Media and Creative Skills</h3>
+    <p>Learn multimedia design, video editing, graphics creation, and creative digital production using modern tools and techniques, & digital creativity.</p>
+  </div>
+</a>
+<a href="career-skills.html" class="skill-link">
+  <div class="skill-card">
+    <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d" alt="Career and Soft Skills">
+    <h3>Building a Career and Soft Skills</h3>
+    <p>Develop career readiness, communication, teamwork, leadership, problem solving, and professional growth through activities.</p>
+  </div>
+</a>
+</div>
+<section class="tutorial-section">
+  <h2 class="section-title">Tutorial & Learning Resources</h2>
+  <p class="section-subtitle">
+    Explore guided tutorials designed to strengthen academic knowledge, technical skills,
+    and professional competencies aligned with the Skill Development & Training Hub.
+  </p>
+  <div class="tutorial-container">
+
+    <div class="tutorial-card">
+      <img src="https://image2url.com/r2/default/images/1769394359226-70dbcc87-b5b6-4e54-a2a3-e6a58fc61758.png" alt="English Tutorials">
+      <div class="price-tag">฿100/hr</div>
+      <h3>English Language Tutorials</h3>
+      <p>
+        Comprehensive tutorials covering listening, speaking, reading, and writing skills,
+        including grammar, vocabulary, pronunciation, and workplace communication.
+      </p>
+    </div>
+    <div class="tutorial-card">
+      <img src="https://images.unsplash.com/photo-1518770660439-4636190af475" alt="Programming Tutorials">
+      <div class="price-tag">฿150/hr</div>
+      <h3><center>Programming & Coding Tutorials</center></h3>
+      <p>
+        Learn programming fundamentals and practical skills using HTML, CSS, JavaScript,
+        Visual Basic, and other beginner-friendly programming languages.
+      </p>
+    </div>
+
+    <div class="tutorial-card">
+      <img src="https://images.unsplash.com/photo-1492724441997-5dc865305da7" alt="Multimedia Tutorials">
+      <div class="price-tag">฿150/hr</div>
+      <h3><center>Multimedia & Creative Tutorials</center></h3>
+      <p>
+        Step-by-step tutorials on graphic design, video editing, animation,
+        digital media production, and creative software tools.
+      </p>
+    </div>
+
+    <div class="tutorial-card">
+      <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d" alt="Career Tutorials">
+      <div class="price-tag">฿200/hr</div>
+      <h3><center>Career & Professional Skills Tutorials</center></h3>
+      <p>
+        Tutorials focused on communication skills, teamwork, leadership basics,
+        resume writing, interview preparation, and workplace professionalism.
+      </p>
+    </div>
+
+<div class="tutorial-card">
+  <img src="https://image2url.com/r2/default/images/1769505019298-5a4b46c2-4c00-4ca2-b62d-cd5f1164f9e0.png" alt="TOEIC Preparation">
+  <div class="price-tag">฿150/hr</div>
+  <h3><center>TOEIC Preparation Tutorials</center></h3>
+  <p>
+    Lessons focused on the Test of English for International Communication (TOEIC),
+    covering listening, reading, speaking and writing strategies for workplace English. 
+  </p>
+</div>
+
+<div class="tutorial-card">
+  <img src="https://image2url.com/r2/default/images/1769504732991-c63fc6bf-4f7f-456d-b26d-6b9dc6b26e5b.png" alt="TOEFL Study Sessions">
+  <div class="price-tag">฿200/hr</div>
+  <h3><center>TOEFL Study Tutorials</center></h3>
+  <p>
+    Focused instruction on the Test of English as a Foreign Language
+    (TOEFL), including reading, listening, speaking and writing sections for academic success. 
+  </p>
+</div>
+
+<div class="tutorial-card">
+  <img src="https://image2url.com/r2/default/images/1769504858583-3e5b84d2-ca43-4851-938d-d0e8df80d2c4.png" alt="CEFR Language Levels">
+  <div class="price-tag">฿200/hr</div>
+  <h3><center>CEFR Language Level Guides</center></h3>
+  <p>
+    Tutorials explaining the Common European Framework of Reference for Languages (CEFR),
+    covering A1 to C2 proficiency descriptors and how they apply to English skill development.
+  </p>
+</div>
+
+<div class="tutorial-card">
+  <img src="https://image2url.com/r2/default/images/1769504533797-8872798a-10e1-4f01-b415-dc84a26f45f3.png" alt="IELTS Test Prep">
+  <div class="price-tag">฿250/hr</div>
+  <h3><center>IELTS Exam Preparation</center></h3>
+  <p>
+    Tutorials for the International English Language Testing System (IELTS),
+    including key strategies for listening, reading, writing, and speaking tests for study or migration.
+  </p>
+</div>
+  </div>
+
+</section>
+ <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
+
+  <div style="width:220px;">
+    <button class="portal-btn"
+            onclick="window.location.href='tutorial_signup.html'">
+      Sign Up for Tutorial
+    </button>
+  </div>
+
+  <div style="width:220px;">
+    <button class="portal-btn"
+            onclick="window.location.href='tutorial_packages.html'">
+      View Tutorial Packages
+    </button>
+  </div>
+
+</div>
+
+  </div>
+</div>
+
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="footer-content">
+    <h3>Integrated Learning, Tutorials, Innovation, and Assessment System</h3>
+    <p>Assess Today. Excel Tomorrow.</p>
+    <p>&copy; 2026 Examination System Portal · All Rights Reserved</p>
+  </div>
+
+</footer>
+<script>
+function registerStudent(){
+  const inputs = document.querySelectorAll("#registerModal input");
+  const [name,email,contact,username,password] = inputs;
+  const msg = document.getElementById("registerMsg");
+
+  if(!name.value || !email.value || !contact.value || !username.value || !password.value){
+    msg.style.color = "orange";
+    msg.innerText = "Please complete all fields.";
+    return;
+  }
+
+  localStorage.setItem("studentName", name.value);
+  localStorage.setItem("studentEmail", email.value);
+  localStorage.setItem("studentContact", contact.value);
+  localStorage.setItem("studentUsername", username.value);
+  localStorage.setItem("studentPassword", password.value);
+
+  msg.style.color = "#4fd1ff";
+  msg.innerText = "Registration successful. Please login.";
+
+  setTimeout(() => {
+    openLogin();
+  }, 800);
+}
+
+function loginStudent(){
+  const inputs = document.querySelectorAll("#loginModal input");
+  const [username,password] = inputs;
+  const msg = document.getElementById("loginMsg");
+
+  if(
+    username.value === localStorage.getItem("studentUsername") &&
+    password.value === localStorage.getItem("studentPassword")
+  ){
+    localStorage.setItem("loggedIn","true");
+    msg.style.color = "#4fd1ff";
+    msg.innerText = "Login successful!";
+
+    setTimeout(() => {
+      openExam();
+    }, 800);
+
+  } else {
+    msg.innerText = "Incorrect username or password.";
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Final Examination - Website Development</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:#e0f7ff;
+    user-select:none;
+}
+.flash-alert {
+    animation: flash 0.4s alternate infinite;
+}
+@keyframes flash {
+    from { background: black; }
+    to { background: transparent; }
+}
+@media print{
+    body{background:#fff;color:#000}
+    button,.timer{display:none}
+}
+
+.header{text-align:center;padding:20px}
+.header img{width:130px}
+
+.timer{text-align:center;font-size:22px;font-weight:bold;margin-bottom:10px}
+
+.container{
+    width:90%;
+    margin:auto;
+    background:rgba(0,0,0,0.45);
+    padding:20px;
+    border-radius:12px;
+}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px}
+td{border:1px solid #00e5ff;padding:8px}
+input{width:96%;padding:6px}
+
+.question{
+    border:1px solid #00e5ff;
+    padding:12px;
+    margin-bottom:14px;
+    border-radius:8px;
+}
+
+.choice{
+    padding:6px;
+    margin:6px 0;
+    border:1px solid #aaa;
+    border-radius:5px;
+    cursor:pointer;
+}
+.choice.selected{background:#ccefff;color:#000}
+.choice.correct{background:#d4edda;color:#000}
+.choice.wrong{background:#f8d7da;color:#000}
+
+.answer-review{
+    margin-top:8px;
+    padding:6px;
+    background:rgba(255,255,255,0.1);
+    border-radius:6px;
+    font-size:14px;
+}
+
+button{
+    padding:12px 24px;
+    font-size:16px;
+    border:none;
+    border-radius:8px;
+    margin:10px;
+    cursor:pointer;
+}
+
+/* === SECURITY WARNING OVERLAY === */
+#securityOverlay{
+    position:fixed;
+    top:0;left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.9);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    animation:blink 0.6s infinite;
+}
+
+#securityOverlay h1{
+    color:#fff;
+    font-size:38px;
+    text-align:center;
+}
+
+@keyframes blink{
+    0%{opacity:1;}
+    50%{opacity:0.2;}
+    100%{opacity:1;}
+}
+
+/* Freeze exam */
+.freeze *{
+    pointer-events:none !important;
+}
+
+#result{text-align:center;font-size:18px;margin-top:20px}
+</style>
+</head>
+
+<body
+oncopy="return false"
+oncut="return false"
+onpaste="return false"
+oncontextmenu="return false"
+ondragstart="return false"
+onselectstart="return false">
+
+<div class="header">
+    <img src="https://image2url.com/r2/default/images/1769014503355-aed3a663-edee-4712-974b-a5aa8787a845.png">
+    <h1>FINAL EXAMINATION</h1>
+    <h2>Chumphon Vocational College</h2>
+    <h3>Website Development</h3>
+</div>
+
+<div class="timer" id="timer">Time Remaining: 60:00</div>
+
+<div class="container">
+
+<table>
+<tr><td>Subject</td><td><input value="Website Development"></td></tr>
+<tr><td>Name of Student</td><td><input></td></tr>
+<tr><td>Student ID Number</td><td><input></td></tr>
+<tr><td>Department</td><td><input></td></tr>
+<tr><td>Teacher</td><td><input></td></tr>
+</table>
+
+<div id="questions"></div>
+
+<div style="text-align:center">
+    <button onclick="submitExam()">Submit Examination</button>
+    <button onclick="window.print()">Save PDF</button>
+</div>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+// Disable key shortcuts
+document.addEventListener('keydown',function(e){
+    if(e.ctrlKey && ['c','v','p','C','V','P'].includes(e.key)){
+        e.preventDefault();
+        alert("Copying, pasting, and printing are disabled.");
+    }
+});
+
+// Detect PrintScreen
+document.addEventListener('keyup',function(e){
+    if(e.key === "PrintScreen" || e.keyCode === 44){
+        alert("Screenshots are not allowed!");
+        document.body.classList.add("flash-alert");
+        setTimeout(()=>document.body.classList.remove("flash-alert"),2000);
+    }
+});
+
+// Warn on blur
+window.addEventListener('blur',function(){
+    alert("Do not leave the exam window!");
+});
+</script>
+
+<script>
+let timeLeft=3600;
+setInterval(()=>{
+    let m=Math.floor(timeLeft/60);
+    let s=timeLeft%60;
+    document.getElementById("timer").textContent=
+    `Time Remaining: ${m}:${s.toString().padStart(2,"0")}`;
+    timeLeft--;
+},1000);
+
+const questions=[
+{q:"1. What does HTML stand for?",o:["High Text Markup Language","Hyper Text Markup Language","Hyperlink Text Method Language","Hyperlink Text Mark Language"],c:1}, // Common HTML definition :contentReference[oaicite:1]{index=1}
+{q:"2. Which tag defines a paragraph in HTML?",o:["<p>","<para>","<text>","<paragraph>"],c:0},
+{q:"3. The <a> tag is used for:",o:["Images","Links","Paragraphs","Lists"],c:1},
+{q:"4. How do you insert an image in HTML?",o:['<img src="...">','<image src="...">','<picture src="...">','<src img="...">'],c:0},
+{q:"5. Which tag creates an unordered list?",o:["<ol>","<ul>","<li>","<list>"],c:1},
+{q:"6. CSS stands for:",o:["Cascading Style Sheets","Computer Style Sheets","Creative Style Syntax","Colorful Style Sheets"],c:0},
+{q:"7. To link an external CSS file, which tag is used?",o:['<link rel="stylesheet" href="style.css">','<css src="style.css">','<style src="style.css">','<script href="style.css">'],c:0}, // Linking CSS :contentReference[oaicite:2]{index=2}
+{q:"8. Which property is used to change text color in CSS?",o:["font-color","text-style","color","text-color"],c:2},
+{q:"9. How do you center align text in CSS?",o:["text-align:center;","align:center;","center-text;","text:center;"],c:0},
+{q:"10. JavaScript is used to:",o:["Style web pages","Add interactivity","Store data server-side","Design logos"],c:1},
+{q:"11. Which HTML tag defines the title of the document?",o:["<meta>","<title>","<header>","<head>"],c:1},
+{q:"12. Where should the CSS <link> tag be placed?",o:["<body>","<head>","<footer>","<section>"],c:1},
+{q:"13. The <div> element is used to:",o:["Define a section","Insert images","Create links","Display table"],c:0},
+{q:"14. Which tag is used for the largest heading?",o:["<h6>","<heading>","<h1>","<big>"],c:2},
+{q:"15. To make text bold, use:",o:["<strong>","<b>","Both","None"],c:2},
+{q:"16. Which is a semantic element?",o:["<div>","<span>","<article>","<font>"],c:2},
+{q:"17. Which tag is used for table row?",o:["<td>","<th>","<tr>","<table>"],c:2},
+{q:"18. The CSS box model includes:",o:["margin, border, padding","color, size, font","height only","width only"],c:0},
+{q:"19. How do you write a comment in CSS?",o:["/* comment */","// comment","<!-- comment -->","## comment"],c:0},
+{q:"20. Which HTML5 element is used for graphics?",o:["<canvas>","<draw>","<graphic>","<picture>"],c:0}, // canvas element :contentReference[oaicite:3]{index=3}
+{q:"21. What does “responsive design” mean?",o:["Design fixed width","Design for all screen sizes","Design only posters","Design only images"],c:1},
+{q:"22. Inline styles are written using:",o:["style attribute","<css> tag","<script> tag","<link> tag"],c:0},
+{q:"23. Which attribute provides alternative text for images?",o:["src","alt","title","href"],c:1},
+{q:"24. Which element defines a form?",o:["<form>","<input>","<button>","<label>"],c:0},
+{q:"25. Which input type is used for passwords?",o:["text","password","email","number"],c:1},
+{q:"26. JavaScript can change HTML content using:",o:["DOM","CSS","SQL","XML"],c:0},
+{q:"27. What symbol is used for an ID selector in CSS?",o:[".","#","*","&"],c:1},
+{q:"28. Which CSS property controls the spacing between letters?",o:["letter-spacing","word-spacing","font-size","text-align"],c:0},
+{q:"29. To apply a class in HTML you use:",o:['class="..."','id="..."','style="..."','type="..."'],c:0},
+{q:"30. External JavaScript file is defined using:",o:['<script src="file.js">','<js file="file.js">','<code src="file.js">','<link src="file.js">'],c:0},
+{q:"31. The <footer> tag represents:",o:["End of document","Header section","Navigation","Main Content"],c:0},
+{q:"32. The <nav> element defines:",o:["Navigation links","Form area","Header only","Table section"],c:0},
+{q:"33. Which CSS property changes background color?",o:["bgcolor","background-color","color","back-color"],c:1},
+{q:"34. The <section> tag is used to:",o:["Group related content","Style text","Insert scripts","Link files"],c:0},
+{q:"35. Which tag embed JavaScript?",o:["<javascript>","<script>","<js>","<code>"],c:1},
+{q:"36. What does DOM stand for?",o:["Document Object Model","Data Object Mode","Database Object Model","Document Outline Method"],c:0},
+{q:"37. Which property makes text bold in CSS?",o:["font-weight:bold","text-bold:true","font:bold","text-weight:bold"],c:0},
+{q:"38. Which tag defines a clickable button?",o:["<btn>","<button>","<input> type=button","Both B and C"],c:3},
+{q:"39. <ul> creates:",o:["Unordered list","Ordered list","Definition list","Numbered list"],c:0},
+{q:"40. <ol> creates:",o:["Numbered list","Bulleted list","Paragraphs","Headings"],c:0},
+{q:"41. <input type=\"email\"> validates:",o:["Email format","Text length","Numbers only","Dates"],c:0},
+{q:"42. The CSS flexbox layout uses:",o:["display:flex","layout:flex","flex:display","flex-layout"],c:0},
+{q:"43. JavaScript loops through array with:",o:["for","foreach","loop","repeat"],c:0},
+{q:"44. Which method writes to the browser console?",o:["console.log()","print()","write()","log.console()"],c:0},
+{q:"45. <table> tag defines:",o:["Table","Row","Cell","Header"],c:0},
+{q:"46. HTML attribute href is for:",o:["Links","Images","Scripts","Styles"],c:0},
+{q:"47. The CSS border property sets:",o:["Border around an element","Text color","Font size","Image source"],c:0},
+{q:"48. The <label> tag is used to:",o:["Label form controls","Insert text","Define buttons","Add images"],c:0},
+{q:"49. To make text uppercase in CSS:",o:["text-transform: uppercase","text-case:upper","font-case:upper","none"],c:0},
+{q:"50. The HTML <!DOCTYPE> declaration defines:",o:["HTML version","CSS version","JS version","Image format"],c:0},
+{q:"51. Which hash link jumps to page top?",o:["#top","#bottom","#here","#page"],c:0},
+{q:"52. Which event fires on click?",o:["onclick","onhover","onmouseover","onkeypress"],c:0},
+{q:"53. CSS transitions animate:",o:["Property changes","HTML structure","Script code","Server data"],c:0},
+{q:"54. Which unit is relative in CSS?",o:["em","px","cm","pt"],c:0},
+{q:"55. The <head> tag contains:",o:["Metadata","Visible content","Buttons","Footers"],c:0},
+{q:"56. Which HTML tag stops line break?",o:["<br>","<hr>","<break>","<nl>"],c:0},
+{q:"57. CSS grid layout uses:",o:["display:grid","layout:grid","grid:display","gridmode"],c:0},
+{q:"58. JavaScript functions are defined with:",o:["function name()","func name()","method name()","def name()"],c:0},
+{q:"59. To include comments in HTML:",o:["<!-- comment -->","/* comment */","// comment","# comment"],c:0},
+{q:"60. Anchor links use attribute:",o:["href","src","alt","id"],c:0}
+];
+
+const qDiv=document.getElementById("questions");
+let answers=new Array(questions.length).fill(null);
+
+questions.forEach((q,i)=>{
+    let box=document.createElement("div");
+    box.className="question";
+    box.innerHTML=`<b>${q.q}</b><br>`;
+    q.o.forEach((opt,idx)=>{
+        let d=document.createElement("div");
+        d.className="choice";
+        d.textContent=`${String.fromCharCode(65+idx)}. ${opt}`;
+        d.onclick=()=>{
+            if(answers[i]!==null) return;
+            answers[i]=idx;
+            d.classList.add("selected");
+        };
+        box.appendChild(d);
+    });
+    qDiv.appendChild(box);
+});
+
+function submitExam(){
+    let score=0;
+    answers.forEach((a,i)=>{
+        const box=qDiv.children[i];
+        const correct=questions[i].c;
+        const choices=box.querySelectorAll(".choice");
+
+        if(a===correct){
+            score++;
+            choices[a].classList.add("correct");
+        }else{
+            if(a!==null) choices[a].classList.add("wrong");
+            choices[correct].classList.add("correct");
+        }
+
+        box.innerHTML+=`
+        <div class="answer-review">
+            <b>Your Answer:</b> ${a!==null?questions[i].o[a]:"No Answer"}<br>
+            <b>Correct Answer:</b> ${questions[i].o[correct]}
+        </div>`;
+    });
+
+    document.getElementById("result").innerHTML=`
+    <h3>EXAM RESULT</h3>
+    Raw Score: ${score}/60<br>
+    30% Equivalent: ${(score/60*30).toFixed(2)}
+    `;
+}
+</script>
+<script>
+/* ===============================
+   STRICT EXAM SECURITY SYSTEM
+================================ */
+
+// Prevent refresh / close
+window.addEventListener("beforeunload", function (e) {
+    e.preventDefault();
+    e.returnValue = "Exam in progress. Leaving will submit your exam.";
+});
+
+// Disable copy, paste, cut, right-click
+["copy","paste","cut","contextmenu"].forEach(event=>{
+    document.addEventListener(event,e=>{
+        e.preventDefault();
+        alert("Action disabled during examination.");
+    });
+});
+
+// Disable text selection
+document.addEventListener("selectstart", e => e.preventDefault());
+
+// Detect Print Screen (PC)
+document.addEventListener("keyup", function (e) {
+    if (e.key === "PrintScreen" || e.keyCode === 44) {
+        securityViolation("Screenshot detected!");
+    }
+});
+
+// Detect Ctrl shortcuts
+document.addEventListener("keydown", function(e){
+    if (
+        e.ctrlKey &&
+        ["c","v","x","p","s","u"].includes(e.key.toLowerCase())
+    ) {
+        e.preventDefault();
+        securityViolation("Restricted keyboard shortcut!");
+    }
+});
+
+// Detect tab switch / minimize (PC & Mobile)
+let examLocked = false;
+
+function securityViolation(message){
+    if(examLocked) return;
+    examLocked = true;
+
+    alert(message + "\nYour exam will be submitted.");
+
+    submitExam(); // auto-submit
+}
+
+// Detect tab switching
+document.addEventListener("visibilitychange", function(){
+    if (document.hidden) {
+        securityViolation("You left the exam window!");
+    }
+});
+
+// Detect window blur (Alt+Tab / app switch)
+window.addEventListener("blur", function(){
+    securityViolation("Exam window lost focus!");
+});
+
+// Mobile: detect touch gestures (basic protection)
+let touchStartY = 0;
+document.addEventListener("touchstart", e=>{
+    touchStartY = e.touches[0].clientY;
+});
+
+document.addEventListener("touchmove", e=>{
+    let touchMoveY = e.touches[0].clientY;
+    if(Math.abs(touchMoveY - touchStartY) > 100){
+        securityViolation("Gesture detected!");
+    }
+});
+
+// Disable zoom (mobile)
+document.addEventListener('gesturestart', e => e.preventDefault());
+document.addEventListener('gesturechange', e => e.preventDefault());
+document.addEventListener('gestureend', e => e.preventDefault());
+
+</script>
+<audio id="alarmSound" loop>
+    <source src="https://image2url.com/r2/default/audio/1769311028308-f1317f8e-a263-48aa-b094-95803b516508.mp3" type="audio/mpeg">
+</audio>
+
+<div id="securityOverlay">
+    <h1>⚠ EXAM VIOLATION DETECTED ⚠<br>
+    SCREENSHOT AND COPY PASTE ARE NOT ALLOWED</h1>
+</div>
+<script>
+/* ===============================
+   MAXIMUM EXAM SECURITY SYSTEM
+================================ */
+
+let examFrozen = false;
+
+function freezeExam(reason){
+    if(examFrozen) return;
+    examFrozen = true;
+
+    // Freeze UI
+    document.body.classList.add("freeze");
+
+    // Show blinking warning
+    document.getElementById("securityOverlay").style.display="flex";
+
+    // Play alarm
+    const alarm=document.getElementById("alarmSound");
+    alarm.volume=1;
+    alarm.play().catch(()=>{});
+
+    // Alert backup
+    alert(reason + "\nExam will be submitted automatically.");
+
+    // Auto submit after 3 seconds
+    setTimeout(()=>{
+        submitExam();
+    },3000);
+}
+
+/* BLOCK LEAVING */
+window.addEventListener("beforeunload",e=>{
+    e.preventDefault();
+    e.returnValue="";
+});
+
+/* SCREENSHOT DETECTION (PC) */
+document.addEventListener("keyup",e=>{
+    if(e.key==="PrintScreen"||e.keyCode===44){
+        freezeExam("Screenshot detected!");
+    }
+});
+
+/* TAB SWITCH / APP SWITCH */
+document.addEventListener("visibilitychange",()=>{
+    if(document.hidden){
+        freezeExam("You left the exam window!");
+    }
+});
+
+window.addEventListener("blur",()=>{
+    freezeExam("Exam window lost focus!");
+});
+
+/* KEYBOARD SHORTCUTS */
+document.addEventListener("keydown",e=>{
+    if(
+        e.ctrlKey &&
+        ["c","v","x","p","s","u"].includes(e.key.toLowerCase())
+    ){
+        e.preventDefault();
+        freezeExam("Restricted key pressed!");
+    }
+});
+
+/* COPY / PASTE / RIGHT CLICK */
+["copy","paste","cut","contextmenu"].forEach(evt=>{
+    document.addEventListener(evt,e=>{
+        e.preventDefault();
+        freezeExam("Restricted action detected!");
+    });
+});
+
+/* MOBILE GESTURE DETECTION */
+let touchY=0;
+document.addEventListener("touchstart",e=>{
+    touchY=e.touches[0].clientY;
+});
+
+document.addEventListener("touchmove",e=>{
+    if(Math.abs(e.touches[0].clientY-touchY)>120){
+        freezeExam("Gesture navigation detected!");
+    }
+});
+
+/* DISABLE ZOOM */
+["gesturestart","gesturechange","gestureend"].forEach(evt=>{
+    document.addEventListener(evt,e=>e.preventDefault());
+});
+</script>
+<script>
+/* === UNLOCK AUDIO ON FIRST INTERACTION === */
+let audioUnlocked = false;
+
+function unlockAudio(){
+    if(audioUnlocked) return;
+    const alarm = document.getElementById("alarmSound");
+    alarm.play().then(()=>{
+        alarm.pause();
+        alarm.currentTime = 0;
+        audioUnlocked = true;
+        console.log("Audio unlocked");
+    }).catch(()=>{});
+}
+
+["click","keydown","touchstart"].forEach(evt=>{
+    document.addEventListener(evt, unlockAudio, { once:true });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Tutorial Packages | Examination System Portal</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Arial,sans-serif}
+
+body{
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#e8f6ff;
+  min-height:100vh;
+}
+
+/* ================= HEADER & FOOTER ================= */
+.glass-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 50px;
+  background:rgba(0,0,0,0.45);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(79,209,255,.4);
+}
+
+footer.glass-bar{
+  border-bottom:none;
+  border-top:1px solid rgba(79,209,255,.4);
+  justify-content:center;
+}
+
+/* ================= HEADER ================= */
+.logo-title h1{
+  font-size:20px;
+  color:#4fd1ff;
+}
+.logo-title p{font-size:13px;opacity:.9}
+
+.nav-buttons{
+  display:flex;
+  gap:14px;
+}
+
+.nav-buttons button{
+  padding:8px 18px;
+  border-radius:20px;
+  border:1px solid #4fd1ff;
+  background:transparent;
+  color:#4fd1ff;
+  cursor:pointer;
+  font-weight:600;
+  transition:.3s;
+}
+
+.nav-buttons button:hover{
+  background:#4fd1ff;
+  color:#000;
+}
+
+/* ================= PACKAGES ================= */
+section{padding:60px 40px}
+
+.section-title{text-align:center;margin-bottom:40px}
+
+.package-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:30px;
+}
+
+.package-card{
+  position:relative;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(79,209,255,.4);
+  border-radius:20px;
+  padding:25px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.package-card:hover{
+  transform:translateY(-6px);
+  border:1px solid #4fd1ff;
+  box-shadow:0 0 18px rgba(79,209,255,.25), inset 0 0 12px rgba(79,209,255,.18);
+}
+
+.ribbon{
+  position:absolute;
+  top:-10px;
+  right:-10px;
+  background:#4fd1ff;
+  color:#000;
+  padding:6px 14px;
+  font-size:12px;
+  font-weight:bold;
+  border-radius:12px;
+}
+
+.package-card img{
+  width:100%;
+  height:140px;
+  object-fit:cover;
+  border-radius:14px;
+  margin-bottom:14px;
+  border:1px solid rgba(79,209,255,.35);
+}
+
+.package-card h3{text-align:center;color:#4fd1ff;margin-bottom:16px}
+
+.rate{text-align:center;font-size:14px;margin:6px 0}
+
+.portal-btn{
+  margin-top:18px;
+  width:100%;
+  padding:10px;
+  border-radius:20px;
+  border:none;
+  background:#4fd1ff;
+  font-weight:bold;
+  cursor:pointer;
+}
+.portal-btn:hover{background:#79e3ff}
+
+/* ================= MODAL ================= */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+
+.modal-content{
+  background:#0f1629;
+  padding:30px;
+  border-radius:20px;
+  max-width:520px;
+  width:90%;
+  border:1px solid #4fd1ff;
+}
+
+.modal-content h2{color:#4fd1ff;margin-bottom:12px}
+.modal-content ul{margin-left:20px;line-height:1.6}
+
+.close-btn{text-align:center;margin-top:20px}
+.close-btn button{
+  padding:8px 20px;
+  border-radius:18px;
+  border:none;
+  background:#4fd1ff;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* ================= FOOTER ================= */
+.footer-content{text-align:center}
+.footer-content h3{color:#4fd1ff}
+.footer-content p{font-size:14px;opacity:.9}
+</style>
+</head>
+
+<body>
+
+<header class="glass-bar">
+  <div class="logo-title">
+    <h1>Integrated Learning, Tutorials, Innovation, and Assessment System</h1>
+    <p>Empowering Students Through Structured Learning and Evaluation</p>
+  </div>
+  <div class="nav-buttons">
+    <button onclick="location.href='index.html'">Home</button>
+    <button>Courses</button>
+    <button>Services</button>
+    <button>Contact Us</button>
+    <button>Developer</button>
+  </div>
+</header>
+
+<section>
+  <div class="section-title">
+    <h2>Tutorial Packages</h2>
+    <p>Click a package to view what you will learn</p>
+  </div>
+
+  <div class="package-grid">
+
+    <!-- ENGLISH -->
+    <div class="package-card" onclick="openModal('english')">
+      <div class="ribbon">ENGLISH</div>
+      <img src="https://image2url.com/r2/default/images/1769477667802-207fda00-70eb-4eb2-bec4-8df0ad0a6558.png">
+      <h3>English Language Tutorial</h3>
+      <div class="rate">Hourly: ₱100</div>
+      <div class="rate">Weekly: ₱400</div>
+      <div class="rate">Monthly: ₱1,500</div>
+      <button class="portal-btn">Sign Up</button>
+    </div>
+
+    <!-- PROGRAMMING -->
+    <div class="package-card" onclick="openModal('programming')">
+      <div class="ribbon">CODING</div>
+      <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97">
+      <h3>Programming & Coding</h3>
+      <div class="rate">Hourly: ₱150</div>
+      <div class="rate">Weekly: ₱600</div>
+      <div class="rate">Monthly: ₱2,300</div>
+      <button class="portal-btn">Sign Up</button>
+    </div>
+
+    <!-- MULTIMEDIA -->
+    <div class="package-card" onclick="openModal('multimedia')">
+      <div class="ribbon">MEDIA</div>
+      <img src="https://images.unsplash.com/photo-1492724441997-5dc865305da7">
+      <h3>Multimedia & Creative</h3>
+      <div class="rate">Hourly: ₱150</div>
+      <div class="rate">Weekly: ₱600</div>
+      <div class="rate">Monthly: ₱2,300</div>
+      <button class="portal-btn">Sign Up</button>
+    </div>
+
+    <!-- CAREER -->
+    <div class="package-card" onclick="openModal('career')">
+      <div class="ribbon">CAREER</div>
+      <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df">
+      <h3>Career & Soft Skills</h3>
+      <div class="rate">Hourly: ₱200</div>
+      <div class="rate">Weekly: ₱800</div>
+      <div class="rate">Monthly: ₱3,000</div>
+      <button class="portal-btn">Sign Up</button>
+    </div>
+
+    <!-- TOEIC -->
+    <div class="package-card" onclick="openModal('toeic')">
+      <div class="ribbon">TOEIC</div>
+      <img src="https://image2url.com/r2/default/images/1769505019298-5a4b46c2-4c00-4ca2-b62d-cd5f1164f9e0.png">
+      <h3>TOEIC Preparation</h3>
+      <div class="rate">Hourly: ₱200</div>
+      <div class="rate">Weekly: ₱800</div>
+      <div class="rate">Monthly: ₱2,000</div>
+      <button class="portal-btn">Sign Up</button>
+    </div>
+
+    <!-- TOEFL -->
+    <div class="package-card" onclick="openModal('toefl')">
+      <div class="ribbon">TOEFL</div>
+      <img src="https://image2url.com/r2/default/images/1769504732991-c63fc6bf-4f7f-456d-b26d-6b9dc6b26e5b.png">
+      <h3>TOEFL iBT Preparation</h3>
+      <div class="rate">Hourly: ₱200</div>
+      <div class="rate">Weekly: ₱800</div>
+      <div class="rate">Monthly: ₱2,500</div>
+      <button class="portal-btn">Sign Up</button>
+    </div>
+
+    <!-- IELTS -->
+    <div class="package-card" onclick="openModal('ielts')">
+      <div class="ribbon">IELTS</div>
+      <img src="https://image2url.com/r2/default/images/1769504533797-8872798a-10e1-4f01-b415-dc84a26f45f3.png">
+      <h3>IELTS Academic & General</h3>
+      <div class="rate">Hourly: ₱200</div>
+      <div class="rate">Weekly: ₱800</div>
+      <div class="rate">Monthly: ₱2,800</div>
+      <button class="portal-btn">Sign Up</button>
+    </div>
+
+    <!-- CEFR -->
+    <div class="package-card" onclick="openModal('cefr')">
+      <div class="ribbon">CEFR</div>
+      <img src="https://image2url.com/r2/default/images/1769504858583-3e5b84d2-ca43-4851-938d-d0e8df80d2c4.png">
+      <h3>CEFR Level Training</h3>
+      <div class="rate">Hourly: ₱200</div>
+      <div class="rate">Weekly: ₱800</div>
+      <div class="rate">Monthly: ₱2,200</div>
+      <button class="portal-btn">Sign Up</button>
+    </div>
+
+  </div>
+</section>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2 id="modalTitle"></h2>
+    <ul id="modalList"></ul>
+    <div class="close-btn">
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer class="glass-bar">
+  <div class="footer-content">
+    <h3>Integrated Learning, Tutorials, Innovation, and Assessment System</h3>
+    <p>Assess Today. Excel Tomorrow.</p>
+    <p>&copy; 2026 Examination System Portal</p>
+  </div>
+</footer>
+
+<script>
+const content={
+  english:["Listening & Speaking","Reading & Writing","Vocabulary & Grammar","Conversation Practice","Workplace English"],
+  programming:["HTML & CSS","Database Basics","Visual Basic","Programming Logic","Hands-on Projects"],
+  multimedia:["Graphic Design","Animation","Video Editing","Creative Tools","Portfolio Building"],
+  career:["Communication Skills","Interview Preparation","Professional Etiquette","Leadership","Teamwork"],
+  toeic:["Listening & Reading Practice","Business English","Mock TOEIC Tests","Score Improvement Strategies"],
+  toefl:["Reading, Listening, Speaking, Writing","Academic Vocabulary","Integrated Tasks","Full Mock Exams"],
+  ielts:["Academic & General Modules","Speaking Interviews","Writing Task 1 & 2","Band Score Strategies"],
+  cefr:["CEFR A1–C2 Levels","Grammar & Communication","Placement Test","Progress Tracking"]
+};
+
+function openModal(type){
+  document.getElementById("modalTitle").innerText=type.toUpperCase()+" PACKAGE INCLUDES";
+  const list=document.getElementById("modalList");
+  list.innerHTML="";
+  content[type].forEach(item=>{
+    const li=document.createElement("li");
+    li.textContent=item;
+    list.appendChild(li);
+  });
+  document.getElementById("modal").style.display="flex";
+}
+function closeModal(){
+  document.getElementById("modal").style.display="none";
+}
+</script>
+
+</body>
+</html>
